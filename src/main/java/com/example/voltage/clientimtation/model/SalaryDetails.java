@@ -17,5 +17,5 @@ public class SalaryDetails {
     private Long id;
     private String name;
     private String designation;
-    private BigDecimal salary;
+    private BigDecimal salary; //60000.00
 }

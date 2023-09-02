@@ -3,6 +3,8 @@ package com.example.voltage.clientimtation.serviceImplementation.user;
 import com.example.voltage.clientimtation.dto.request.LoginRequest;
 import com.example.voltage.clientimtation.dto.request.RegisterRequest;
 import com.example.voltage.clientimtation.dto.response.JwtResponse;
+import com.example.voltage.clientimtation.dto.response.TokenResponse;
+import com.example.voltage.clientimtation.exception.EmailAlreadyExistsException;
 import com.example.voltage.clientimtation.exception.RoleNotFoundException;
 import com.example.voltage.clientimtation.exception.UserAlreadyExistsException;
 import com.example.voltage.clientimtation.jwt.JwtUtils;
@@ -14,6 +16,7 @@ import com.example.voltage.clientimtation.repository.UserRepository;
 import com.example.voltage.clientimtation.service.JwtService.UserDetailsImpl;
 import com.example.voltage.clientimtation.service.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.apache.hc.core5.http.protocol.ResponseServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,6 +29,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -47,14 +51,16 @@ public class UserServiceImpl implements UserService {
         String jwt = jwtUtils.generateJwtToken(authentication);
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
         List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
-        return ResponseEntity.ok(new JwtResponse(
-                userDetails.getId(),
-                jwt,
-                userDetails.getUsername(),
-                userDetails.getPhoneNumber(),
-                userDetails.getEmail(),
-                roles));
+        return ResponseEntity.ok(new TokenResponse(jwt));
+//        return ResponseEntity.ok(new JwtResponse(
+//                userDetails.getId(),
+//                jwt,
+//                userDetails.getUsername(),
+//                userDetails.getPhoneNumber(),
+//                userDetails.getEmail(),
+//                roles));
     }
     @Override
     public ResponseEntity<?> registerUser(RegisterRequest registerRequest)  {
@@ -98,9 +104,17 @@ public class UserServiceImpl implements UserService {
     }
 
     private boolean userNameExists(final String userName) {
-        return userRepository.existsByUserName(userName) != null;
+       Optional<User> user = userRepository.findByUserName(userName);
+       if(user.isPresent()) {
+           throw new UserAlreadyExistsException("Username already exists :" + userName);
+       }
+        return false;
     }
     private boolean emailExists(final String email) {
-        return userRepository.existsByEmail(email) != null;
+      Optional<User> user = userRepository.findByEmail(email);
+      if(user.isPresent()){
+          throw new EmailAlreadyExistsException("Email already exists : " + email);
+      }
+      return  false;
     }
 }

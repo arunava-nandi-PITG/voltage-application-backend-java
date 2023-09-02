@@ -26,6 +26,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest) throws RoleNotFoundException {
+        System.out.println(registerRequest);
        return userService.registerUser(registerRequest);
     }
 

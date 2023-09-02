@@ -41,10 +41,11 @@ public class SalaryServiceImpl implements SalaryService {
         String[] salary = new String[1];
         salary[0] = salaryDetails.getSalary().toString();
         //if salary doesn't contain decimal point condition true or salary contains decimal point condition true.
-//        || (!salary[0].contains(".00"))
-        if((!salary[0].contains(".")) || !salary[0].contains(".00")) {
-            salary[0] = salary[0]+".00";
-        }else{
+        if (!salary[0].contains(".")) {
+            salary[0] = salary[0] + ".00";
+        }if (salary[0].contains(".")) {
+            salary[0] = String.valueOf(salaryDetails.getSalary());
+        }else {
             System.out.println("data not valid  format. example format: `100000.00`");
             throw new FormatNotValidException("data not valid  format. example format: `100000.00`");
         }
@@ -93,8 +94,10 @@ public class SalaryServiceImpl implements SalaryService {
     // TODO: RETURN PROPER RESPONSE MESSAGE
     @Override
     public void delete(Long id) {
-       SalaryDetails salaryDetails =  salaryRepository.findById(id).orElseThrow(()->new UserNotFoundException("User not found for " +id));
-        salaryRepository.delete(salaryDetails);
+        SalaryDetails salaryDetails = salaryRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found for " + id));
+        if (salaryDetails != null) {
+            salaryRepository.delete(salaryDetails);
+        }
     }
 
     @Override
@@ -122,6 +125,6 @@ public class SalaryServiceImpl implements SalaryService {
 
     @Override
     public SalaryDetails getSalaryById(Long id) {
-        return salaryRepository.findById(id).orElseThrow(()->new UserNotFoundException("User id not found : " + id));
+        return salaryRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User id not found : " + id));
     }
 }
