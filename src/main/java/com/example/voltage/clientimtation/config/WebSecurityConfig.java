@@ -3,8 +3,8 @@ package com.example.voltage.clientimtation.config;
 import com.example.voltage.clientimtation.jwt.AuthEntryPointJwt;
 import com.example.voltage.clientimtation.jwt.AuthTokenFilter;
 import com.example.voltage.clientimtation.service.JwtService.UserDetailsServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -20,6 +20,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 @RequiredArgsConstructor
@@ -35,12 +40,28 @@ public class WebSecurityConfig {
         http
                 .csrf()
                 .disable()
+                .cors().configurationSource(new CorsConfigurationSource() {
+                    @Override
+                    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+                        CorsConfiguration cfg = new CorsConfiguration();
+
+                        cfg.setAllowedOriginPatterns(Collections.singletonList("*"));
+                        cfg.setAllowedMethods(Collections.singletonList("*"));
+                        cfg.setAllowCredentials(true);
+                        cfg.setAllowedHeaders(Collections.singletonList("*"));
+                        cfg.setExposedHeaders(Arrays.asList(
+                                "Authorization"
+                        ));
+                        cfg.setMaxAge(3600L);
+                        return cfg;
+                    }
+                }).and()
                 .authorizeHttpRequests().requestMatchers("/api/v1/auth/**").permitAll()
                 .requestMatchers(HttpMethod.GET,"/api/v1/demo/**").hasRole("USER")
-                .requestMatchers("/api/v1/employee/**").permitAll()
-//                .requestMatchers(HttpMethod.GET, "/api/v1/employee/**").hasAnyRole("USER","ADMIN")
-//                .requestMatchers(HttpMethod.PUT, "/api/v1/employee/**").hasRole("ADMIN")
-//                .requestMatchers(HttpMethod.DELETE, "/api/v1/employee/**").hasRole("ADMIN")
+//                .requestMatchers("/api/v1/employee/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v1/employee/**").hasAnyRole("USER","ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/v1/employee/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/employee/**").hasRole("ADMIN")
                 .anyRequest()
                 .authenticated()
                 .and()
