@@ -12,7 +12,7 @@ public interface SalaryService {
     SalaryDetails findById(Long id);
     SalaryDetails update(Long id, SalaryDetails salaryDetails);
     void delete(Long id);
-    String encryptSalary(String salary[]);
-    String decryptSalary(String salary[]);
+    String encryptSalary(String[] salary);
+    String decryptSalary(String[] salary);
     SalaryDetails getSalaryById(Long id);
 }

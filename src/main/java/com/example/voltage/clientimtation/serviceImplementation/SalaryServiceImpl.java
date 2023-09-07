@@ -43,9 +43,11 @@ public class SalaryServiceImpl implements SalaryService {
         //if salary doesn't contain decimal point condition true or salary contains decimal point condition true.
         if (!salary[0].contains(".")) {
             salary[0] = salary[0] + ".00";
-        }if (salary[0].contains(".")) {
-            salary[0] = String.valueOf(salaryDetails.getSalary());
-        }else {
+        }
+        if(salary[0].contains(".")) {
+            salary[0] = salary[0];
+        }
+        else {
             System.out.println("data not valid  format. example format: `100000.00`");
             throw new FormatNotValidException("data not valid  format. example format: `100000.00`");
         }
