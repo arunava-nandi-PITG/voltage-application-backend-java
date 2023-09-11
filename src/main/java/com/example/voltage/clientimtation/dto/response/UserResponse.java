@@ -5,22 +5,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class JwtResponse {
+public class UserResponse {
 
     private Long id;
     private String username;
     private String email;
     private String phoneNumber;
     private List<String> roles;
-    private Set<TokenResponse> token;
-    private String type = "Bearer ";
-
-
 }
-
-

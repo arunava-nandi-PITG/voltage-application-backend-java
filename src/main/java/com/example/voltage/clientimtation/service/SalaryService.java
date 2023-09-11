@@ -1,7 +1,6 @@
 package com.example.voltage.clientimtation.service;
 
 import com.example.voltage.clientimtation.model.SalaryDetails;
-import com.example.voltage.clientimtation.model.security.EncodedSalary;
 
 import java.util.List;
 

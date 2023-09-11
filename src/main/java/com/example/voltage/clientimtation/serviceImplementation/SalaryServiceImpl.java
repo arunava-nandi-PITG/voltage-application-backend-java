@@ -7,13 +7,10 @@ import com.example.voltage.clientimtation.model.security.EncodedSalary;
 import com.example.voltage.clientimtation.model.security.SalaryRequestModel;
 import com.example.voltage.clientimtation.repository.SalaryRepository;
 import com.example.voltage.clientimtation.service.SalaryService;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -28,7 +25,7 @@ public class SalaryServiceImpl implements SalaryService {
     private final SalaryRepository salaryRepository;
     private final RestTemplate restTemplate;
 
-    String urlProtect = "https://172.16.163.90/vibesimple/rest/v1/protect";
+    String urlProtect = "https://172.16.163.124/vibesimple/rest/v1/protect";
     String urlAccess = "https://172.16.163.90/vibesimple/rest/v1/access";
 
     @Override
@@ -48,7 +45,6 @@ public class SalaryServiceImpl implements SalaryService {
             salary[0] = salary[0];
         }
         else {
-            System.out.println("data not valid  format. example format: `100000.00`");
             throw new FormatNotValidException("data not valid  format. example format: `100000.00`");
         }
         BigDecimal encryptedSalary = new BigDecimal(encryptSalary(salary));

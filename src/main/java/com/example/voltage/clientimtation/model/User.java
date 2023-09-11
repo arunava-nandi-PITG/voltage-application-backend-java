@@ -1,6 +1,10 @@
 package com.example.voltage.clientimtation.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,9 +18,18 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank(message = "Username must be required")
+    @Size(max = 20)
     private String userName;
+    @NotBlank(message = "Email must be required")
+    @Email(message = "Email format not valid")
     private String email;
+    @NotBlank(message = "Email must be required")
+    @Size(max = 12 , min = 10)
     private String phoneNumber;
+    @NotBlank(message = "Password must be required")
+    @JsonIgnore
     private String password;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",joinColumns = @JoinColumn(name = "user_id"),inverseJoinColumns = @JoinColumn(name = "role_id"))

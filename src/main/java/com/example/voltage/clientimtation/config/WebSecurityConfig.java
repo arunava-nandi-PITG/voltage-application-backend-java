@@ -25,6 +25,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
@@ -49,7 +50,7 @@ public class WebSecurityConfig {
                         cfg.setAllowedMethods(Collections.singletonList("*"));
                         cfg.setAllowCredentials(true);
                         cfg.setAllowedHeaders(Collections.singletonList("*"));
-                        cfg.setExposedHeaders(Arrays.asList(
+                        cfg.setExposedHeaders(List.of(
                                 "Authorization"
                         ));
                         cfg.setMaxAge(3600L);
@@ -57,12 +58,15 @@ public class WebSecurityConfig {
                     }
                 }).and()
                 .authorizeHttpRequests().requestMatchers("/api/v1/auth/**").permitAll()
+                .requestMatchers("/v2/api-docs/**").permitAll()
                 .requestMatchers(HttpMethod.GET,"/api/v1/demo/**").hasRole("USER")
 //                .requestMatchers("/api/v1/employee/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/employee/**").hasAnyRole("USER","ADMIN")
                 .requestMatchers(HttpMethod.POST, "/api/v1/employee/**").hasAnyRole("USER","ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/v1/employee/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/v1/employee/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET,"/api/v1/authentication/userAuth").hasAnyRole("USER","ADMIN")
+                .requestMatchers(HttpMethod.GET,"/api/v1/authentication/adminAuth").hasAnyRole("ADMIN")
                 .anyRequest()
                 .authenticated()
                 .and()
