@@ -48,11 +48,11 @@ public class SalaryController {
         return new ResponseEntity<>("Salary Record Deleted", HttpStatus.OK);
     }
 
-    @PostMapping("/getactualsalary")
-    public String getActualSalary(@RequestBody String fakeSalary) {
-        String[] salary = {fakeSalary};
-        return salaryService.decryptSalary(salary);
-    }
+//    @PostMapping("/getactualsalary")
+//    public String getActualSalary(@RequestBody String fakeSalary) {
+//        String[] salary = {fakeSalary};
+//        return salaryService.decryptSalary(salary);
+//    }
 
     @GetMapping("/salary/{id}")
     public SalaryDetails getSalaryById(@PathVariable Long id){
