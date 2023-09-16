@@ -20,6 +20,6 @@ public class SalaryDetails {
     private String name;
     @NotBlank(message = "Designation must be required")
     private String designation;
-    @NotBlank(message = "Salary must be required")
+
     private BigDecimal salary; //60000.00
 }

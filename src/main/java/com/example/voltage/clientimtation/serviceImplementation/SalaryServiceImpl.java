@@ -7,6 +7,7 @@ import com.example.voltage.clientimtation.model.security.EncodedSalary;
 import com.example.voltage.clientimtation.model.security.SalaryRequestModel;
 import com.example.voltage.clientimtation.repository.SalaryRepository;
 import com.example.voltage.clientimtation.service.SalaryService;
+import com.example.voltage.clientimtation.service.voltageService.VoltageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,6 +26,7 @@ public class SalaryServiceImpl implements SalaryService {
 
     private final SalaryRepository salaryRepository;
     private final RestTemplate restTemplate;
+    private final VoltageService voltageService;
 
     String urlProtect = "https://172.16.163.124/vibesimple/rest/v1/protect";
     String urlAccess = "https://172.16.163.90/vibesimple/rest/v1/access";
@@ -53,6 +56,8 @@ public class SalaryServiceImpl implements SalaryService {
         return salaryDetails;
     }
 
+
+
     @Override
     public SalaryDetails findById(Long id) {
         if (salaryRepository.findById(id).isPresent()) {
@@ -66,6 +71,8 @@ public class SalaryServiceImpl implements SalaryService {
             return null;
         }
     }
+
+
 
     @Override
     public SalaryDetails update(Long id, SalaryDetails salaryDetails) {
@@ -125,4 +132,17 @@ public class SalaryServiceImpl implements SalaryService {
     public SalaryDetails getSalaryById(Long id) {
         return salaryRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User id not found : " + id));
     }
+
+    private String encryptSalary(String actualSalary) {
+        String[] actualSalaryList = new String[1];
+        actualSalaryList[0] = actualSalary;
+        return voltageService.encryptSalary(actualSalaryList);
+    }
+
+    private String decryptSalary(String salary) {
+        String[] salaryList  = new String[1];
+        salaryList[0] = salary;
+        return voltageService.decryptSalary(salaryList);
+    }
+
 }

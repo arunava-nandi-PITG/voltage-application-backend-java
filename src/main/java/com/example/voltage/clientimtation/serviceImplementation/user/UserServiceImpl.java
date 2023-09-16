@@ -16,7 +16,9 @@ import com.example.voltage.clientimtation.repository.RoleRepository;
 import com.example.voltage.clientimtation.repository.UserRepository;
 import com.example.voltage.clientimtation.service.JwtService.UserDetailsImpl;
 import com.example.voltage.clientimtation.service.user.UserService;
+import com.example.voltage.clientimtation.service.voltageService.VoltageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -40,6 +42,7 @@ public class UserServiceImpl implements UserService {
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
+    private final VoltageService voltageService;
 
     @Override
     public AuthResponse authenticateUser(LoginRequest loginRequest) {
@@ -58,7 +61,8 @@ public class UserServiceImpl implements UserService {
             user.setId(userDetails.getId());
             user.setUsername(userDetails.getUsername());
             user.setEmail(userDetails.getEmail());
-            user.setPhoneNumber(userDetails.getPhoneNumber());
+//            user.setPhoneNumber(userDetails.getPhoneNumber());
+            user.setPhoneNumber(decryptPhoneNumber(userDetails.getPhoneNumber()));
             user.setRoles(roles);
 
             return new AuthResponse(user, jwt);
@@ -101,7 +105,8 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         user.setUserName(registerRequest.getUserName());
         user.setEmail(registerRequest.getEmail());
-        user.setPhoneNumber(registerRequest.getPhoneNumber());
+//        user.setPhoneNumber(registerRequest.getPhoneNumber());
+        user.setPhoneNumber(encryptPhoneNumber(registerRequest.getPhoneNumber()));
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         user.setRoles(roles);
 
@@ -122,5 +127,17 @@ public class UserServiceImpl implements UserService {
             throw new EmailAlreadyExistsException("Email already exists : " + email);
         }
         return false;
+    }
+
+    private String encryptPhoneNumber(String actualPhoneNumber){
+        String[] actualPhoneNumberList = new String[1];
+        actualPhoneNumberList[0] = actualPhoneNumber;
+        return voltageService.encryptionPhoneNumber(actualPhoneNumberList);
+    }
+
+    private String decryptPhoneNumber(String phoneNumber){
+        String [] phoneNumberList = new String[1];
+        phoneNumberList[0] = phoneNumber;
+        return voltageService.decryptPhoneNumber(phoneNumberList);
     }
 }

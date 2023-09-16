@@ -9,4 +9,8 @@ public class FormatNotValidException extends  RuntimeException{
     public FormatNotValidException(String message){
         super(message);
     }
+
+    public FormatNotValidException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
